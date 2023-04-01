@@ -40,6 +40,73 @@ using the `register` method to tell laravel how to instantiate our service class
 a- call the global app()    ~ `app(\App\Services\Geolocation\Geolocation::class)`<br>
 b- using make() method      ~ `app()->make(\App\Services\Geolocation\Geolocation::class)->search('abc')`<br>
 
+* using `Dependency Injection` to resolve the service class from the service container.<br>
+```php
+<?php
+
+namespace App;
+
+use App\Services\Geolocation\Geolocation;
+
+class Playground
+{
+    public function __construct(Geolocation $geolocation)
+    {
+        $geolocation->search('123 Main St');
+    }
+    
+
+}
+
+```
+* Using `Facade` to resolve the service class from the service container.<br>
+* Facade is a static proxy to the service container.<br>   
+```php
+<?php
+
+namespace App\Services\Geolocation;
+
+use Illuminate\Support\Facades\Facade;
+
+/**
+ * @method static array search(string $location)
+ * @see Geolocation
+ */
+class GeolocationFacade extends Facade
+{
+    //override the getFacadeAccessor method to return our custom class name of the service
+    protected static function getFacadeAccessor(): string
+    {
+        return Geolocation::class;
+    }
+
+
+}
+
+
+```
+
+```php
+<?php
+
+namespace App;
+
+use App\Services\Geolocation\Geolocation;
+use App\Services\Geolocation\GeolocationFacade;
+
+
+class Playground
+{
+    public function __construct()
+    {
+        $result=GeolocationFacade::search('London');
+        dump($result);
+    }
+
+}
+
+```
+
 
 
 
